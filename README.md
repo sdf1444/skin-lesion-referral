@@ -4,6 +4,8 @@ A clinician signs in, uploads a lesion photo with ABCDE features, and gets a tri
 
 **Not a clinical tool.** Scoring is a rule-based heuristic ([scoring.service.ts](backend/src/referrals/scoring.service.ts)). Swap in a validated image classifier behind that service.
 
+See the [User Guide](USER_GUIDE.md) for sign-in, role permissions, referral creation, status changes, and safe use guidance.
+
 ## Stack
 
 - `frontend/`: React + Vite + TypeScript + React Router (Vitest, Testing Library)
