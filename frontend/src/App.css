@@ -1,0 +1,12 @@
+:root { font-family: system-ui, sans-serif; line-height: 1.5; }
+main { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+label { display: block; margin: 0.6rem 0; }
+label.check { display: inline-block; margin-right: 1rem; }
+input:not([type='checkbox']), textarea { display: block; width: 100%; padding: 0.4rem; box-sizing: border-box; }
+fieldset { margin: 1rem 0; }
+button { padding: 0.5rem 1rem; margin-top: 0.5rem; }
+pre { background: #f4f4f4; color: #111; padding: 1rem; white-space: pre-wrap; }
+.warn { background: #fff3cd; color: #111; padding: 0.5rem 1rem; border-radius: 4px; }
+.error, .urgent { color: #b00020; }
+.soon { color: #b36b00; }
+.routine { color: #1b6e2e; }
