@@ -41,12 +41,6 @@ export class CreateReferralDto {
   @MaxLength(100)
   site!: string;
 
-  @Transform(trim)
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  referrerName!: string;
-
   @Transform(toBool) @IsBoolean() asymmetry: boolean = false;
   @Transform(toBool) @IsBoolean() borderIrregular: boolean = false;
   @Transform(toBool) @IsBoolean() colourVariation: boolean = false;

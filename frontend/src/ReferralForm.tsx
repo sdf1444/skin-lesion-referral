@@ -6,9 +6,10 @@ const MAX_BYTES = 8 * 1024 * 1024
 interface Props {
   disabled: boolean
   onSubmit: (data: FormData) => void
+  onEdit?: () => void
 }
 
-export function ReferralForm({ disabled, onSubmit }: Props) {
+export function ReferralForm({ disabled, onSubmit, onEdit }: Props) {
   const [fileError, setFileError] = useState<string | null>(null)
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -28,11 +29,10 @@ export function ReferralForm({ disabled, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="Referral form">
+    <form onSubmit={handleSubmit} onChange={onEdit} aria-label="Referral form">
       <label>Patient name<input name="patientName" required maxLength={100} /></label>
       <label>Patient age<input name="patientAge" type="number" min={0} max={120} required /></label>
       <label>Lesion site<input name="site" required maxLength={100} /></label>
-      <label>Referrer name<input name="referrerName" required maxLength={100} /></label>
       <label>
         Lesion photo (JPEG or PNG)
         <input name="image" type="file" accept="image/jpeg,image/png" required />

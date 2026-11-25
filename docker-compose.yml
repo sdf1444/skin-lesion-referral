@@ -19,12 +19,18 @@ services:
   backend:
     build: ./backend
     environment:
+      NODE_ENV: development # local demo stack; demo-user seeding is refused when this is "production"
       DB_HOST: db
       DB_USER: referral
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: referral
       DB_SYNCHRONIZE: "true" # local convenience; use migrations in a real deployment
       CORS_ORIGINS: http://localhost:8080
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env (min 32 chars)}
+      COOKIE_SECURE: "false" # served over http on localhost; set true behind HTTPS
+      TRUST_PROXY_HOPS: "1" # nginx in the frontend container
+      SEED_DEMO_USERS: ${SEED_DEMO_USERS:-false}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-}
     depends_on:
       db:
         condition: service_healthy

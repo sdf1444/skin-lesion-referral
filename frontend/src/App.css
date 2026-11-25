@@ -10,3 +10,15 @@ pre { background: #f4f4f4; color: #111; padding: 1rem; white-space: pre-wrap; }
 .error, .urgent { color: #b00020; }
 .soon { color: #b36b00; }
 .routine { color: #1b6e2e; }
+.topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+.topbar button { margin-top: 0; }
+.toolbar { display: flex; justify-content: space-between; align-items: end; gap: 1rem; }
+.toolbar label { margin: 0; }
+a.button { padding: 0.5rem 1rem; border: 1px solid #888; border-radius: 4px; text-decoration: none; color: inherit; }
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+th, td { text-align: left; padding: 0.4rem; border-bottom: 1px solid #ddd; }
+.actions button { margin-right: 0.5rem; }
+.badge { padding: 0.1rem 0.5rem; border-radius: 999px; background: #e8e8e8; color: #111; font-size: 0.85rem; }
+.badge-accepted, .badge-completed { background: #d4edda; }
+.badge-rejected, .badge-cancelled { background: #f8d7da; }
+.badge-under_review { background: #cce5ff; }

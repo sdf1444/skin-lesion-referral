@@ -1,18 +1,28 @@
 import './App.css'
-import { ReferralForm } from './ReferralForm'
-import { ReferralResult } from './ReferralResult'
-import { useSubmitReferral } from './useSubmitReferral'
+import { Route, Routes } from 'react-router-dom'
+import { AuthProvider, RequireAuth, RequireRole } from './auth'
+import { Layout } from './Layout'
+import { LoginPage } from './LoginPage'
+import { NewReferralPage } from './NewReferralPage'
+import { ReferralDetailPage } from './ReferralDetailPage'
+import { ReferralListPage } from './ReferralListPage'
 
 export default function App() {
-  const { state, submit } = useSubmitReferral()
-
   return (
-    <main>
-      <h1>Skin Lesion Referral</h1>
-      <p className="warn">Decision-support prototype using a rule-based score. Not a validated diagnostic tool.</p>
-      <ReferralForm disabled={state.status === 'submitting'} onSubmit={submit} />
-      {state.status === 'error' && <p role="alert" className="error">{state.message}</p>}
-      {state.status === 'success' && <ReferralResult referral={state.referral} />}
-    </main>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route element={<RequireAuth />}>
+          <Route element={<Layout />}>
+            <Route index element={<ReferralListPage />} />
+            <Route element={<RequireRole roles={['referrer', 'admin']} />}>
+              <Route path="referrals/new" element={<NewReferralPage />} />
+            </Route>
+            <Route path="referrals/:id" element={<ReferralDetailPage />} />
+            <Route path="*" element={<p>Page not found.</p>} />
+          </Route>
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }

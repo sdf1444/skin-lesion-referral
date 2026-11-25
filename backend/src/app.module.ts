@@ -3,10 +3,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RolesGuard } from './auth/auth.decorators';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { validateEnv, type EnvVars } from './config/env.validation';
 import { HealthController } from './health/health.controller';
 import { Referral } from './referrals/referral.entity';
 import { ReferralsModule } from './referrals/referrals.module';
+import { User } from './users/user.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,7 +19,14 @@ import { ReferralsModule } from './referrals/referrals.module';
       isGlobal: true,
       validate: (raw) => ({ ...validateEnv(raw) }),
     }),
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
+    // Rate limiting is exercised manually/in staging; the e2e suite logs in many times from one IP.
+    ThrottlerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<EnvVars, true>) => ({
+        throttlers: [{ ttl: 60_000, limit: 60 }],
+        skipIf: () => config.getOrThrow<string>('NODE_ENV') === 'test',
+      }),
+    }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService<EnvVars, true>) => ({
@@ -24,13 +36,20 @@ import { ReferralsModule } from './referrals/referrals.module';
         username: config.getOrThrow<string>('DB_USER'),
         password: config.getOrThrow<string>('DB_PASSWORD'),
         database: config.getOrThrow<string>('DB_NAME'),
-        entities: [Referral],
+        entities: [Referral, User],
         synchronize: config.getOrThrow<string>('DB_SYNCHRONIZE') === 'true',
       }),
     }),
+    UsersModule,
+    AuthModule,
     ReferralsModule,
   ],
   controllers: [HealthController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  // Order matters: rate limit, then authenticate, then authorise by role.
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
 })
 export class AppModule {}
